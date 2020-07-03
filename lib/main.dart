@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MaterialApp(home: LoginView()));
@@ -9,25 +11,19 @@ class LoginView extends StatefulWidget {
 }
 
 class LoginViewState extends State<LoginView> {
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final emailNameController = TextEditingController();
   final passwordController = TextEditingController();
-  //final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
-
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
     emailNameController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
-  bool inputValidated(BuildContext context){
-
-    if(emailNameController.text.isEmpty){
-
+  bool inputValidated(BuildContext context) {
+    if (emailNameController.text.isEmpty) {
       //Scaffold.of(context).showSnackBar(snackBar);
       return false;
     }
@@ -36,119 +32,17 @@ class LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: _scaffoldKey,
-      body: new Center(
+      body: SingleChildScrollView(
         child: new Container(
+          padding: EdgeInsets.only(top: 260,right: 20,left: 20,bottom: 20),
           child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 24, top: 200, right: 24),
-                child: new Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Share Everything',
-                          style: TextStyle(
-                              fontSize: 28.0,
-                              color: Color.fromRGBO(169, 169, 169, 1.0),
-                              fontFamily: 'Montserrat-Medium',
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  top: 5,
-                  bottom: 20,
-                  right: 20,
-                ),
-                child: new TextField(
-                  controller: emailNameController,
-                  decoration: new InputDecoration(
-                      labelText: 'Email',
-                      contentPadding: EdgeInsets.only(
-                        left: 8,
-                        right: 0,
-                        bottom: 8,
-                      ),
-                      labelStyle: new TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: 'Montserrat-Light',
-                      )),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                ),
-                child: new TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: new InputDecoration(
-                      labelText: 'Password',
-                      contentPadding: EdgeInsets.only(
-                        left: 8,
-                        right: 0,
-                        bottom: 8,
-                      ),
-                      labelStyle: new TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: 'Montserrat-Light',
-                      )),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: 20,
-                ),
-                child: RaisedButton(
-                  onPressed: () {
-
-                    Builder(
-                      builder: (BuildContext context){
-                        final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
-                        Scaffold.of(context).showSnackBar(snackBar);
-                        return snackBar;
-                      }
-                    );
-
-                    //inputValidated(context);
-                    //Navigator.of(context).push(_createRoute());
-                    //LoginService().getLoginResponse(userNameController.text, passwordController.text);
-                    //Navigator.push(context, new MaterialPageRoute(builder: (context) => new MyApp(),),);
-                    //Navigator.of(context).push(_createRoute());
-                  },
-                  color: Colors.blue,
-                  disabledColor: Colors.blue,
-                  shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(30.0),
-                  ),
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 10,
-                    bottom: 10,
-                  ),
-                  child: Text(
-                    'LOGIN',
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontFamily: 'Montserrat-Medium'),
-                  ),
-                ),
-              ),
+              textField(emailNameController, 'Email', true),
+              textField(passwordController, 'Password', true),
+              button(),
             ],
           ),
         ),
@@ -156,9 +50,152 @@ class LoginViewState extends State<LoginView> {
     );
   }
 
-/*Color hexToColor(String code) {
-    return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
-  }*/
+  Widget textField(
+      TextEditingController controller, String label, bool isRequired) {
+    return new Container(
+      padding: EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 20),
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          new Container(
+            padding: EdgeInsets.only(top: 5, bottom: 5),
+            child: new Row(
+              children: <Widget>[
+                Text(
+                  '$label ',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(112, 112, 112, 1.0)),
+                ),
+                isRequired == true
+                    ? Text(
+                        '*',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(112, 112, 112, 1.0)),
+                      )
+                    : new Container()
+              ],
+            ),
+          ),
+          new Container(
+            height: 50,
+            decoration: new BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(5.0),
+              border: new Border.all(
+                color: Color.fromRGBO(129, 129, 129, 1.0),
+                width: 0.5,
+              ),
+            ),
+            child: new Container(
+                padding: EdgeInsets.only(top: 2, bottom: 2),
+                child: controller == passwordController
+                    ? new TextField(
+                        controller: controller,
+                        obscureText: true,
+                        onChanged: (newVal) {
+                          debugPrint("Added text field: $newVal");
+                        },
+                        style: TextStyle(fontSize: 16),
+                        textAlign: TextAlign.start,
+                        decoration: new InputDecoration(
+                          hintText: '',
+                          border: InputBorder.none,
+                        ),
+                      )
+                    : new TextField(
+                        controller: controller,
+                        onChanged: (newVal) {
+                          debugPrint("Added text field: $newVal");
+                        },
+                        style: TextStyle(fontSize: 16),
+                        textAlign: TextAlign.start,
+                        decoration: new InputDecoration(
+                          hintText: '',
+                          border: InputBorder.none,
+                        ),
+                      )),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget button() {
+    return new Container(
+      padding: EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 20),
+      child: new Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: new Container(
+              padding: EdgeInsets.only(left: 20, right: 10),
+              child: RaisedButton(
+                onPressed: () {
+                  if(checkValidation()){
+
+                  }
+                },
+                color: Colors.blueAccent,
+                disabledColor: Colors.blueGrey,
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                  'Sign in',
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontFamily: 'Montserrat-Medium'),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child:  new Container(
+              padding: EdgeInsets.only(left: 10, right: 20),
+              child: RaisedButton(
+                onPressed: () {},
+                color: Colors.blueAccent,
+                disabledColor: Colors.blueGrey,
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                  'Sign up',
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontFamily: 'Montserrat-Medium'),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  bool checkValidation() {
+    if (emailNameController.text.isEmpty) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text("PLease enter your email!"),
+        backgroundColor: Colors.red,
+      ));
+      return false;
+    }
+
+    if (passwordController.text.isEmpty) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text("Please enter your password!"),
+        backgroundColor: Colors.red,
+      ));
+      return false;
+    }
+    return true;
+  }
+
 }
-
-
