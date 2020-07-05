@@ -27,6 +27,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  progress_dialog: ^1.2.4
 
 
 # For information on the generic Dart part of this file, see the

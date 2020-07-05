@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 void main() => runApp(MaterialApp(home: LoginView()));
 
@@ -14,6 +15,14 @@ class LoginViewState extends State<LoginView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final emailNameController = TextEditingController();
   final passwordController = TextEditingController();
+  ProgressDialog progressDialog;
+
+
+  @override
+  void initState() {
+
+    progressDialog = ProgressDialog(context, type: ProgressDialogType.Normal);
+  }
 
   @override
   void dispose() {
@@ -137,6 +146,7 @@ class LoginViewState extends State<LoginView> {
                 onPressed: () {
                   if(checkValidation()){
 
+                    progressDialog.show();
                   }
                 },
                 color: Colors.blueAccent,
@@ -158,7 +168,9 @@ class LoginViewState extends State<LoginView> {
             child:  new Container(
               padding: EdgeInsets.only(left: 10, right: 20),
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () {
+                  progressDialog.hide();
+                },
                 color: Colors.blueAccent,
                 disabledColor: Colors.blueGrey,
                 shape: new RoundedRectangleBorder(
