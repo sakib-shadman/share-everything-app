@@ -23,23 +23,15 @@ class LoginService extends LoginApi {
   Future<LoginResponse> login(Map<String, String> loginRequestBody) async {
 
     final url = "${strings().url}sign-in";
-
-    debugPrint("Sign-in url : $url");
-    debugPrint("Login request : $loginRequestBody");
-
-
     var response = await ApiClient.getClient().post('$url',
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(loginRequestBody));
 
-    print(response.statusCode);
     if (response.statusCode == 200 || response.statusCode == 400 || response.statusCode == 500) {
       var data = json.decode(response.body);
       Map<String, dynamic> responseData = data;
 
       LoginResponse loginResponse = LoginResponse.fromJson(responseData);
-
-      debugPrint("Log in response: $loginResponse");
       return loginResponse;
     } else {
       throw Exception('There is some error,please try again later!');
