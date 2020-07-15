@@ -1,27 +1,36 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:share_everything_client/HomeView.dart';
+import 'package:share_everything_client/Utils.dart';
+import 'package:share_everything_client/model/LoginResponse.dart';
+import 'package:share_everything_client/service/LoginService.dart';
+import 'package:share_everything_client/viewmodel/LoginViewModel.dart';
 
 void main() => runApp(MaterialApp(home: LoginView()));
 
 class LoginView extends StatefulWidget {
-  // This widget is the root of your application.
 
   LoginViewState createState() => LoginViewState();
 }
 
 class LoginViewState extends State<LoginView> {
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final emailNameController = TextEditingController();
   final passwordController = TextEditingController();
   ProgressDialog progressDialog;
+  LoginViewModel loginViewModel;
+  bool isLoggedIn;
 
 
   @override
   void initState() {
-
     progressDialog = ProgressDialog(context, type: ProgressDialogType.Normal);
+    isUserLoggedIn();
   }
 
   @override
@@ -31,21 +40,13 @@ class LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  bool inputValidated(BuildContext context) {
-    if (emailNameController.text.isEmpty) {
-      //Scaffold.of(context).showSnackBar(snackBar);
-      return false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       body: SingleChildScrollView(
         child: new Container(
-          padding: EdgeInsets.only(top: 260,right: 20,left: 20,bottom: 20),
+          padding: EdgeInsets.only(top: 260, right: 20, left: 20, bottom: 20),
           child: new Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -59,8 +60,8 @@ class LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget textField(
-      TextEditingController controller, String label, bool isRequired) {
+  Widget textField(TextEditingController controller, String label,
+      bool isRequired) {
     return new Container(
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 20),
       child: new Column(
@@ -79,12 +80,12 @@ class LoginViewState extends State<LoginView> {
                 ),
                 isRequired == true
                     ? Text(
-                        '*',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(112, 112, 112, 1.0)),
-                      )
+                  '*',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(112, 112, 112, 1.0)),
+                )
                     : new Container()
               ],
             ),
@@ -103,30 +104,30 @@ class LoginViewState extends State<LoginView> {
                 padding: EdgeInsets.only(top: 2, bottom: 2),
                 child: controller == passwordController
                     ? new TextField(
-                        controller: controller,
-                        obscureText: true,
-                        onChanged: (newVal) {
-                          debugPrint("Added text field: $newVal");
-                        },
-                        style: TextStyle(fontSize: 16),
-                        textAlign: TextAlign.start,
-                        decoration: new InputDecoration(
-                          hintText: '',
-                          border: InputBorder.none,
-                        ),
-                      )
+                  controller: controller,
+                  obscureText: true,
+                  onChanged: (newVal) {
+                    debugPrint("Added text field: $newVal");
+                  },
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.start,
+                  decoration: new InputDecoration(
+                    hintText: '',
+                    border: InputBorder.none,
+                  ),
+                )
                     : new TextField(
-                        controller: controller,
-                        onChanged: (newVal) {
-                          debugPrint("Added text field: $newVal");
-                        },
-                        style: TextStyle(fontSize: 16),
-                        textAlign: TextAlign.start,
-                        decoration: new InputDecoration(
-                          hintText: '',
-                          border: InputBorder.none,
-                        ),
-                      )),
+                  controller: controller,
+                  onChanged: (newVal) {
+                    debugPrint("Added text field: $newVal");
+                  },
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.start,
+                  decoration: new InputDecoration(
+                    hintText: '',
+                    border: InputBorder.none,
+                  ),
+                )),
           )
         ],
       ),
@@ -144,9 +145,14 @@ class LoginViewState extends State<LoginView> {
               padding: EdgeInsets.only(left: 20, right: 10),
               child: RaisedButton(
                 onPressed: () {
-                  if(checkValidation()){
-
-                    progressDialog.show();
+                  if (checkValidation()) {
+                    var loginRequestBody = {
+                      "email" : emailNameController.text ?? "",
+                      "password" : passwordController.text ?? ""
+                    };
+                    progressDialog.show().then((value) {
+                      userLogin(loginRequestBody);
+                    });
                   }
                 },
                 color: Colors.blueAccent,
@@ -165,7 +171,7 @@ class LoginViewState extends State<LoginView> {
             ),
           ),
           Expanded(
-            child:  new Container(
+            child: new Container(
               padding: EdgeInsets.only(left: 10, right: 20),
               child: RaisedButton(
                 onPressed: () {
@@ -210,4 +216,68 @@ class LoginViewState extends State<LoginView> {
     return true;
   }
 
+  void userLogin(Map<String, String> loginRequestBody) {
+    loginViewModel = LoginViewModel(loginApi: LoginService());
+    loginViewModel.login(loginRequestBody).then((LoginResponse loginResponse) {
+
+      progressDialog.hide().then((value) {
+        if(loginResponse.responseStatus != null && loginResponse.responseStatus == "FAILED"){
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(loginResponse.message),
+            backgroundColor: Colors.red,
+          ));
+        } else{
+          Utils(context).storeLoginData(loginResponse);
+        }
+      });
+
+    }
+    ).catchError((onError){
+      debugPrint("Error is occurred in login api calling. $onError");
+      progressDialog.hide().then((value) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(onError.toString()),
+          backgroundColor: Colors.red,
+        ));
+      });
+    });
+  }
+
+  void isUserLoggedIn(){
+
+    Utils(context).loggedInCheck().then((value) {
+      if(value){
+
+       // _createRouteHome();
+
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => HomeView()),
+                (Route<dynamic> route) => false);
+       /* setState(() {
+          isLoggedIn = value ?? false;
+        });*/
+      }
+    });
+  }
+
+
+
 }
+
+Route _createRouteHome() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => HomeView(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var tween = Tween(begin: begin, end: end);
+      var offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+  );
+}
+

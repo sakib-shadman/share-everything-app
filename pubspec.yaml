@@ -28,6 +28,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   progress_dialog: ^1.2.4
+  shared_preferences: ^0.5.3+4
+  http: 0.12.1
+  scoped_model: ^0.3.0
 
 
 # For information on the generic Dart part of this file, see the
