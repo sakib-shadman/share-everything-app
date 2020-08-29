@@ -70,7 +70,6 @@ class Utils {
 
   Future<LoginResponse> readLoginData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    //LoginResponse loginResponse = new LoginResponse();
 
     var data = json.decode(prefs.getString('loginresponse'));
 
@@ -82,7 +81,6 @@ class Utils {
 
   Future<bool> loggedInCheck() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    //LoginResponse loginResponse = new LoginResponse();
     bool isLoggedIn = false;
     isLoggedIn = prefs.getBool("isUserLoggedIn");
     return isLoggedIn;
