@@ -4,11 +4,5 @@ import 'package:share_everything_client/networking/ApiInterface.dart';
 
 class ServiceRepository {
 
- /* ApiInterface apiInterface;
-
-  ServiceRepository({@required this.apiInterface});
-
-  Future<LoginResponse> login()*/
-
   
 }

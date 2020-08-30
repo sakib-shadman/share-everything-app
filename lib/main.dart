@@ -1,20 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:share_everything_client/HomeView.dart';
-import 'package:share_everything_client/Utils.dart';
-import 'package:share_everything_client/model/LoginResponse.dart';
-import 'package:share_everything_client/service/LoginService.dart';
-import 'package:share_everything_client/viewmodel/UserViewModel.dart';
+import 'package:share_everything_client/bloc/authorization_bloc.dart';
 
 import 'LoginView.dart';
 
-void main() => runApp(MaterialApp(home: LauncherView()));
+void main() => runApp(LauncherView());
 
-class LauncherView extends StatefulWidget {
+/*class LauncherView extends StatefulWidget {
 
   LauncherViewState createState() => LauncherViewState();
 }
@@ -23,10 +16,12 @@ class LauncherViewState extends State<LauncherView> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  @override
+  */ /*@override
   void initState() {
     isUserLoggedIn();
-  }
+    super.initState();
+  }*/ /*
+
 
 
   @override
@@ -86,5 +81,29 @@ Route _createRouteHome() {
       );
     },
   );
-}
+}*/
 
+class LauncherView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    authBloc.isUserLoggedIn();
+    return MaterialApp(
+      title: 'Share Everything',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: checkAuthStatus(),
+    );
+  }
+
+  checkAuthStatus() {
+    return StreamBuilder<bool>(
+        stream: authBloc.isUserLoggedInStream,
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData && snapshot.data) {
+            return HomeView();
+          }
+          return LoginView();
+        });
+  }
+}

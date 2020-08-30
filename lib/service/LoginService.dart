@@ -11,9 +11,6 @@ import 'package:share_everything_client/strings.dart';
 
 class LoginService extends LoginApi {
 
- /* http.Client _client = http.Client();
-
-  set client(http.Client value) => _client = value;*/
 
   static final LoginService _internal = LoginService.internal();
 
