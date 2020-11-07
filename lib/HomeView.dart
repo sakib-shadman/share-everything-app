@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-//void main() => runApp(MaterialApp(home: HomeView()));
-
 class HomeView extends StatefulWidget {
 
   @override
@@ -20,7 +18,6 @@ class HomeViewState extends State<HomeView> {
       key: _scaffoldKey,
       body: Center(
         child: new Container(
-          key: _scaffoldKey,
           padding: EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 20),
           child: Text(
             'Home View',

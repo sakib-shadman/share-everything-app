@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "354054178484",
+    "firebase_url": "https://share-everything-2d33c.firebaseio.com",
+    "project_id": "share-everything-2d33c",
+    "storage_bucket": "share-everything-2d33c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:354054178484:android:bbd918c7ac1924c21579e1",
+        "android_client_info": {
+          "package_name": "com.shareeverything.share_everything_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "354054178484-15brm4j2q8qou03qjcsfs72jbnes44mi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0H-778Neas7a7Dv73ucu3VpIEcJYenrg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "354054178484-15brm4j2q8qou03qjcsfs72jbnes44mi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
